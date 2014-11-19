@@ -1,0 +1,27 @@
+{
+  "name": "mechanic-mongoose",
+  "version": "0.1.0",
+  "description": "Mechanic - mongoose common plugins",
+  "repository": "git@github.com:ubaltaci/mechanic-mongoose.git",
+  "main": "index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "author": {
+    "name": "Uğur Baltacı",
+    "email": "ugur@kns.com.tr",
+    "web": "http://www.ugurbaltaci.com"
+  },
+  "license": "MIT",
+  "maintaners": {
+    "name": "Çağdaş Akar",
+    "email": "cagdas@kns.com.tr",
+    "web": "http://www.cagdasakar.com"
+  },
+  "dependencies": {
+    "bluebird": "^2.3.11",
+    "mechanic-forklift": "^0.3.0",
+    "mechanic-id": "^1.1.0",
+    "mongoose-timestamp": "^0.3.0"
+  }
+}
