@@ -1,6 +1,6 @@
 {
   "name": "mechanic-mongoose",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Mechanic - mongoose common plugins",
   "repository": "git@github.com:ubaltaci/mechanic-mongoose.git",
   "main": "index.js",
