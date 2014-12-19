@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "bluebird": "^2.3.11",
-    "mechanic-forklift": "^0.3.0",
+    "mechanic-forklift": "^0.3.1",
     "mechanic-id": "^1.1.0",
     "mongoose-timestamp": "^0.3.0",
     "shortid": "^2.1.3"
