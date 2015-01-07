@@ -1,6 +1,6 @@
 {
   "name": "mechanic-mongoose",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Mechanic - mongoose common plugins",
   "repository": "git@github.com:ubaltaci/mechanic-mongoose.git",
   "main": "index.js",
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "bluebird": "^2.3.11",
-    "mechanic-forklift": "^0.5.1",
+    "mechanic-forklift": "^0.7.0",
     "mechanic-id": "^1.1.0",
     "mongoose-timestamp": "^0.3.0",
     "shortid": "^2.1.3"
