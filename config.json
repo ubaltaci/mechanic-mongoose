@@ -1,0 +1,8 @@
+{
+  "s3": {
+    "accessKey": "AKIAIH376F246X6EZNMA",
+    "secretKey": "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",
+    "bucket": "kiosk_dev"
+  },
+  "mongourl": "mongodb://dekorasyonsa:232421@ds035975.mongolab.com:35975/dekorasyonsa"
+}

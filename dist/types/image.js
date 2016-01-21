@@ -1,13 +1,15 @@
+"use strict";
+
 /**
  *
  * Created by uur on 17/11/14.
  */
 
-module.exports = function(Mongoose) {
+module.exports = function (Mongoose) {
 
     function Image(path, options) {
         Mongoose.Schema.Types.Mixed.call(this, path, options);
-        function validateImage (val) {
+        function validateImage(val) {
             return val && val.filename && val.path;
         }
 
@@ -18,4 +20,4 @@ module.exports = function(Mongoose) {
     Mongoose.Schema.Types.Image = Image;
     Mongoose.Types.Image = Mongoose.Schema.Types.Mixed;
 };
-
+//# sourceMappingURL=image.js.map
