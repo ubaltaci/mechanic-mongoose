@@ -8,7 +8,6 @@
 const Async = require("async");
 const Sharp = require("sharp");
 const Tmp = require("tmp");
-const Uuid = require("node-uuid");
 
 module.exports = (forklift, instance, images, callback) => {
 
