@@ -27,7 +27,6 @@
     "async": "^1.5.2",
     "joi": "^7.1.0",
     "mongoose-timestamp": "^0.5.0",
-    "node-uuid": "^1.4.7",
     "s3-forklift": "0.0.4",
     "sharp": "^0.12.2",
     "shortid": "^2.2.4",
