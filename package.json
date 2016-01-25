@@ -1,6 +1,6 @@
 {
   "name": "mechanic-mongoose",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Mechanic mongoose with attachments",
   "main": "index.js",
   "scripts": {
