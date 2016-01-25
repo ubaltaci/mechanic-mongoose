@@ -12,7 +12,7 @@ var Uuid = require("node-uuid");
 
 module.exports = function (forklift, instance, images, callback) {
 
-    Async.map(images, function (image, eachCallback) {
+    Async.each(images, function (image, eachCallback) {
 
         var localFilePath = instance[image["schemaKey"]]["path"];
         var remoteFolder = "images/" + image["schemaKey"] + "/" + Uuid.v4() + "-";
@@ -24,32 +24,37 @@ module.exports = function (forklift, instance, images, callback) {
 
             var sharp = Sharp(localFilePath).resize(version.size["width"], version.size["height"]);
 
-            console.log(version);
-
             if (!version.resize || version.resize == "!") {
                 sharp.ignoreAspectRatio();
-            } else if (version.resize == "^") {} else if (version.resize == ">" && (!version.size["width"] || !version.size["height"])) {} else if (version.resize == ">" && version.size["width"] && version.size["height"]) {
+            } else if (version.resize == "^") {} else if (version.resize == ">" && (!version.size["width"] || !version.size["height"])) {
+                sharp.min();
+            } else if (version.resize == ">" && version.size["width"] && version.size["height"]) {
                 sharp.min();
             } else {
                 return reduceCallback(new Error(version.resize + " is not valid for " + versionKey + ":" + image["schemaKey"]));
             }
 
             if (!version.output || version.output == "jpeg" || version.output == "jpg") {
-                console.log("fuck!");
-                sharp.jpeg().quality(80);
+                sharp.jpeg();
+
+                if (version.quality) {
+                    sharp.quality(version.quality);
+                }
             } else if (version.output == "png") {
                 sharp.png();
             } else {
                 return reduceCallback(new Error(version.output + " is not valid for " + versionKey + ":" + image["schemaKey"]));
             }
 
-            Tmp.file(function (error, path) {
+            sharp.progressive();
+
+            Tmp.file({ postfix: "." + version.output }, function (error, path) {
 
                 if (error) {
                     return reduceCallback(error);
                 }
 
-                sharp.toFormat("jpeg").toFile(path, function (error) {
+                sharp.toFile(path, function (error) {
 
                     if (error) {
                         return reduceCallback(error);
@@ -57,9 +62,8 @@ module.exports = function (forklift, instance, images, callback) {
 
                     forklift.upload(path, remoteFolder + versionKey + "." + version.output, function (error, url) {
 
-                        console.log(error);
-                        console.log(url);
-                        return reduceCallback(null, {});
+                        uploaded[versionKey] = url;
+                        return reduceCallback(null, uploaded);
                     });
                 });
             });
@@ -68,6 +72,7 @@ module.exports = function (forklift, instance, images, callback) {
             if (error) {
                 return eachCallback(error);
             }
+
             instance[image.schemaKey] = result;
             return eachCallback();
         });

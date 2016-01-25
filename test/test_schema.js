@@ -22,7 +22,7 @@ module.exports = (mongoose) => {
         },
         test_file: {
             type: mongoose.Schema.Types["File"],
-            extension: ["pdf"]
+            extension: ["png"]
         },
         test_title: {
             type: String,

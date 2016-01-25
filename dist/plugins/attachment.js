@@ -197,12 +197,15 @@ module.exports = function (schema, options) {
                 }
 
                 if (!instance[schemaKey].path || !instance[schemaKey].filename) {
-                    console.log(schemaKey + " is not valid in instance: " + instance[schemaKey]);
-                    continue;
+                    return next(new Error(schemaKey + " is not valid in instance: " + instance[schemaKey]));
+                }
+
+                var ext = _getExtension(instance[schemaKey].filename);
+                if (fileField["extensions"].indexOf(ext) == -1) {
+                    return next(new Error(schemaKey + " has not valid extension: " + ext));
                 }
 
                 files.push({
-                    extension: fileField["extensions"],
                     schemaKey: schemaKey
                 });
             }
@@ -228,14 +231,14 @@ module.exports = function (schema, options) {
                 if (!attachments.files) {
                     return autoCallback();
                 }
-                return autoCallback(); //FileUploader(forklift, instance, files, autoCallback);
+                return FileUploader(forklift, instance, files, autoCallback);
             },
             "uploadImages": function uploadImages(autoCallback) {
 
                 if (!attachments.images) {
                     return autoCallback();
                 }
-                ImageUploader(forklift, instance, images, autoCallback);
+                return ImageUploader(forklift, instance, images, autoCallback);
             }
         }, next);
     });
@@ -319,5 +322,14 @@ function _transformSize(size, schemaItem) {
         width: width,
         height: height
     };
+}
+
+function _getExtension(fileName) {
+
+    try {
+        return fileName && fileName.split(".")[1];
+    } catch (e) {
+        return "";
+    }
 }
 //# sourceMappingURL=attachment.js.map

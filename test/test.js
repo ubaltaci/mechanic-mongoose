@@ -79,200 +79,200 @@ describe("Floppy", () => {
         let testSchema;
 
         /*
-        describe("Timestamp plugin", () => {
+         describe("Timestamp plugin", () => {
 
-            before("Connect to Database", (done) => {
-                floppy = new Floppy({mongoose: Mongoose, s3: Config.s3});
-                mongooseTest = new Mongoose.Mongoose();
-                mongooseTest.connect(Config.mongourl, connectionOptions);
-                mongooseTest.connection.on("error", (error) => {
-                    return done(error);
-                });
+         before("Connect to Database", (done) => {
+         floppy = new Floppy({mongoose: Mongoose, s3: Config.s3});
+         mongooseTest = new Mongoose.Mongoose();
+         mongooseTest.connect(Config.mongourl, connectionOptions);
+         mongooseTest.connection.on("error", (error) => {
+         return done(error);
+         });
 
-                mongooseTest.connection.once("open", () => {
-                    testSchema = TestSchema(mongooseTest);
-                    return done();
-                });
-            });
+         mongooseTest.connection.once("open", () => {
+         testSchema = TestSchema(mongooseTest);
+         return done();
+         });
+         });
 
-            let testModel;
+         let testModel;
 
-            it("should register timestamp plugin", () => {
-                floppy.setPlugins(testSchema, ["timestamp"]);
-                Expect(testSchema.tree).to.includes.keys(["createdAt", "updatedAt"]);
-            });
+         it("should register timestamp plugin", () => {
+         floppy.setPlugins(testSchema, ["timestamp"]);
+         Expect(testSchema.tree).to.includes.keys(["createdAt", "updatedAt"]);
+         });
 
-            it("should correctly set createdAt and updatedAt", (done) => {
-                testModel = mongooseTest.model("Test", testSchema);
-                testModel.create({test_title: "created"}, (error, testInstance) => {
-                    Expect(error).to.not.exist;
-                    Expect(testInstance).to.exist;
-                    Expect(testInstance.updatedAt).to.exist;
-                    Expect(testInstance.createdAt).to.exist;
+         it("should correctly set createdAt and updatedAt", (done) => {
+         testModel = mongooseTest.model("Test", testSchema);
+         testModel.create({test_title: "created"}, (error, testInstance) => {
+         Expect(error).to.not.exist;
+         Expect(testInstance).to.exist;
+         Expect(testInstance.updatedAt).to.exist;
+         Expect(testInstance.createdAt).to.exist;
 
-                    // Since its create, updatedAt and createdAt should be same.
-                    Expect(testInstance.createdAt).to.equal(testInstance.updatedAt);
+         // Since its create, updatedAt and createdAt should be same.
+         Expect(testInstance.createdAt).to.equal(testInstance.updatedAt);
 
-                    setTimeout(() => {
+         setTimeout(() => {
 
-                        testInstance.test_title = "updated";
-                        testInstance.save((error) => {
+         testInstance.test_title = "updated";
+         testInstance.save((error) => {
 
-                            Expect(error).to.not.exist;
-                            // Since its update, updatedAt and createdAt should not be same.
-                            Expect(testInstance.createdAt).to.not.equal(testInstance.updatedAt);
-                            done();
-                        });
-                    }, 2000);
+         Expect(error).to.not.exist;
+         // Since its update, updatedAt and createdAt should not be same.
+         Expect(testInstance.createdAt).to.not.equal(testInstance.updatedAt);
+         done();
+         });
+         }, 2000);
 
-                });
-            });
+         });
+         });
 
-            after("Disconnect from Database", (done) => {
-                testSchema = null;
-                floppy = null;
-                mongooseTest.connection.db.dropCollection("tests", function (error) {
-                    if (error) {
-                        return done(error);
-                    }
-                    mongooseTest.disconnect();
-                    done();
-                });
-            });
-        });
+         after("Disconnect from Database", (done) => {
+         testSchema = null;
+         floppy = null;
+         mongooseTest.connection.db.dropCollection("tests", function (error) {
+         if (error) {
+         return done(error);
+         }
+         mongooseTest.disconnect();
+         done();
+         });
+         });
+         });
 
-        describe("ShortId plugin", () => {
+         describe("ShortId plugin", () => {
 
-            before("Connect to Database", (done) => {
+         before("Connect to Database", (done) => {
 
-                floppy = new Floppy({mongoose: Mongoose, s3: Config.s3});
-                mongooseTest = new Mongoose.Mongoose();
-                mongooseTest.connect(Config.mongourl, connectionOptions);
-                mongooseTest.connection.on("error", (error) => {
-                    return done(error);
-                });
+         floppy = new Floppy({mongoose: Mongoose, s3: Config.s3});
+         mongooseTest = new Mongoose.Mongoose();
+         mongooseTest.connect(Config.mongourl, connectionOptions);
+         mongooseTest.connection.on("error", (error) => {
+         return done(error);
+         });
 
-                mongooseTest.connection.once("open", () => {
-                    testSchema = TestSchema(mongooseTest);
-                    return done();
-                });
-            });
+         mongooseTest.connection.once("open", () => {
+         testSchema = TestSchema(mongooseTest);
+         return done();
+         });
+         });
 
-            let testModel;
+         let testModel;
 
-            it("should register _id with string type", () => {
-                floppy.setPlugins(testSchema, ["timestamp", "slug", "shortid"]);
-                Expect(testSchema.tree).to.includes.keys(["_id"]);
-                Expect(testSchema.tree["_id"]["type"]).to.equal(mongooseTest.Schema.Types.String)
-            });
+         it("should register _id with string type", () => {
+         floppy.setPlugins(testSchema, ["timestamp", "slug", "shortid"]);
+         Expect(testSchema.tree).to.includes.keys(["_id"]);
+         Expect(testSchema.tree["_id"]["type"]).to.equal(mongooseTest.Schema.Types.String)
+         });
 
-            it("should create new item with _id with string type", (done) => {
+         it("should create new item with _id with string type", (done) => {
 
-                testModel = mongooseTest.model("Test", testSchema);
+         testModel = mongooseTest.model("Test", testSchema);
 
-                testModel.create({test_title: "created"}, (error, instance) => {
-                    Expect(instance["_id"]).to.exist;
-                    Expect(instance["_id"]).to.be.a("string");
-                    done();
-                });
-            });
+         testModel.create({test_title: "created"}, (error, instance) => {
+         Expect(instance["_id"]).to.exist;
+         Expect(instance["_id"]).to.be.a("string");
+         done();
+         });
+         });
 
-            after("Disconnect from Database", (done) => {
-                testSchema = null;
-                floppy = null;
-                mongooseTest.connection.db.dropCollection("tests", function (error) {
-                    if (error) {
-                        return done(error);
-                    }
-                    mongooseTest.disconnect();
-                    done();
-                });
-            });
-        });
+         after("Disconnect from Database", (done) => {
+         testSchema = null;
+         floppy = null;
+         mongooseTest.connection.db.dropCollection("tests", function (error) {
+         if (error) {
+         return done(error);
+         }
+         mongooseTest.disconnect();
+         done();
+         });
+         });
+         });
 
-        describe("Slug plugin", () => {
+         describe("Slug plugin", () => {
 
-            before("Connect to Database", (done) => {
-                floppy = new Floppy({mongoose: Mongoose, s3: Config.s3});
-                mongooseTest = new Mongoose.Mongoose();
-                mongooseTest.connect(Config.mongourl, connectionOptions);
-                mongooseTest.connection.on("error", (error) => {
-                    return done(error);
-                });
+         before("Connect to Database", (done) => {
+         floppy = new Floppy({mongoose: Mongoose, s3: Config.s3});
+         mongooseTest = new Mongoose.Mongoose();
+         mongooseTest.connect(Config.mongourl, connectionOptions);
+         mongooseTest.connection.on("error", (error) => {
+         return done(error);
+         });
 
-                mongooseTest.connection.once("open", () => {
-                    testSchema = TestSchema(mongooseTest);
-                    return done();
-                });
-            });
+         mongooseTest.connection.once("open", () => {
+         testSchema = TestSchema(mongooseTest);
+         return done();
+         });
+         });
 
-            let testModel;
-            let testInstance;
+         let testModel;
+         let testInstance;
 
-            it("should register slug plugin with slug ref", () => {
-                floppy.setPlugins(testSchema, ["timestamp", "slug"]);
-                Expect(testSchema.tree).to.includes.keys(["test_slug"]);
-            });
+         it("should register slug plugin with slug ref", () => {
+         floppy.setPlugins(testSchema, ["timestamp", "slug"]);
+         Expect(testSchema.tree).to.includes.keys(["test_slug"]);
+         });
 
-            it("should correctly set test_slug", (done) => {
+         it("should correctly set test_slug", (done) => {
 
-                testModel = mongooseTest.model("Test", testSchema);
+         testModel = mongooseTest.model("Test", testSchema);
 
-                testModel.create({test_title: "created"}, (error, instance) => {
-                    Expect(error).to.not.exist;
-                    Expect(instance).to.exist;
-                    Expect(instance["test_slug"]).to.exist;
-                    Expect(instance["test_slug"]).to.equal("created");
-                    testInstance = instance;
-                    done();
+         testModel.create({test_title: "created"}, (error, instance) => {
+         Expect(error).to.not.exist;
+         Expect(instance).to.exist;
+         Expect(instance["test_slug"]).to.exist;
+         Expect(instance["test_slug"]).to.equal("created");
+         testInstance = instance;
+         done();
 
-                });
-            });
+         });
+         });
 
-            it("should correctly set test_slug with same content", (done) => {
+         it("should correctly set test_slug with same content", (done) => {
 
-                testModel = mongooseTest.model("Test", testSchema);
+         testModel = mongooseTest.model("Test", testSchema);
 
-                testInstance.test_title = "created";
-                testInstance.save((error) => {
-                    Expect(error).to.not.exist;
-                    Expect(testInstance).to.exist;
-                    Expect(testInstance["test_slug"]).to.exist;
-                    Expect(testInstance["test_slug"]).to.equal("created");
-                    done();
+         testInstance.test_title = "created";
+         testInstance.save((error) => {
+         Expect(error).to.not.exist;
+         Expect(testInstance).to.exist;
+         Expect(testInstance["test_slug"]).to.exist;
+         Expect(testInstance["test_slug"]).to.equal("created");
+         done();
 
-                });
-            });
+         });
+         });
 
-            it("should correctly set test_slug with same content on another document", (done) => {
+         it("should correctly set test_slug with same content on another document", (done) => {
 
-                testModel = mongooseTest.model("Test", testSchema);
+         testModel = mongooseTest.model("Test", testSchema);
 
-                testModel.create({test_title: "created"}, (error, instance) => {
-                    Expect(error).to.not.exist;
-                    Expect(instance).to.exist;
-                    Expect(instance["test_slug"]).to.exist;
-                    Expect(instance["test_slug"]).to.not.equal("created");
-                    Expect(instance["test_slug"]).to.contains("created");
-                    testInstance = instance;
-                    done();
+         testModel.create({test_title: "created"}, (error, instance) => {
+         Expect(error).to.not.exist;
+         Expect(instance).to.exist;
+         Expect(instance["test_slug"]).to.exist;
+         Expect(instance["test_slug"]).to.not.equal("created");
+         Expect(instance["test_slug"]).to.contains("created");
+         testInstance = instance;
+         done();
 
-                });
-            });
+         });
+         });
 
-            after("Disconnect from Database", (done) => {
-                testSchema = null;
-                floppy = null;
-                mongooseTest.connection.db.dropCollection("tests", function (error) {
-                    if (error) {
-                        return done(error);
-                    }
-                    mongooseTest.disconnect();
-                    done();
-                });
-            });
-        });
-        */
+         after("Disconnect from Database", (done) => {
+         testSchema = null;
+         floppy = null;
+         mongooseTest.connection.db.dropCollection("tests", function (error) {
+         if (error) {
+         return done(error);
+         }
+         mongooseTest.disconnect();
+         done();
+         });
+         });
+         });
+         */
 
         describe("Attachment plugin", () => {
 
@@ -294,33 +294,40 @@ describe("Floppy", () => {
                 });
             });
 
-
             it("should correctly upload image", (done) => {
-
-                //promotion_image:
-                //{ filename: 'Screen Shot 2016-01-24 at 06.52.28.png',
-                //    path: '/var/folders/dz/h_3rq0lj6mbfyqm59dz2tywr0000gn/T/1453611277136-2169-c347452fdaea81fc',
-                //    headers:
-                //    { 'content-disposition': 'form-data; name="promotion_image"; filename="Screen Shot 2016-01-24 at 06.52.28.png"',
-                //        'content-type': 'image/png' },
-                //    bytes: 56012 },
-
 
                 testModel.create({
                     test_image: {
                         filename: "test_image.png",
                         path: Path.join(__dirname, "test_image.png")
                     }
-                },(error, instance) => {
+                }, (error, instance) => {
+                    
                     Expect(error).to.not.exist;
+                    Expect(instance).to.exist;
+                    Expect(instance.test_image).to.exist;
+                    Expect(instance.test_image.main).to.exist;
+                    Expect(instance.test_image.display2).to.exist;
+                    Expect(instance.test_image.display3).to.exist;
+
                     return done();
                 });
             });
 
-            //it("should correctly upload file", (done) => {
-            //
-            //
-            //});
+            it("should correctly upload file", (done) => {
+                testModel.create({
+                    test_file: {
+                        filename: "test_image.png",
+                        path: Path.join(__dirname, "test_image.png")
+                    }
+                }, (error, instance) => {
+
+                    Expect(error).to.not.exist;
+                    Expect(instance).to.exist;
+                    Expect(instance.test_file).to.exist;
+                    return done();
+                });
+            });
 
             after("Disconnect from Database", (done) => {
                 testSchema = null;

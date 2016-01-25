@@ -12,7 +12,7 @@ const Uuid = require("node-uuid");
 
 module.exports = (forklift, instance, images, callback) => {
 
-    Async.map(images, (image, eachCallback) => {
+    Async.each(images, (image, eachCallback) => {
 
         const localFilePath = instance[image["schemaKey"]]["path"];
         const remoteFolder = `images/${image["schemaKey"]}/${Uuid.v4()}-`;
@@ -31,7 +31,7 @@ module.exports = (forklift, instance, images, callback) => {
 
             }
             else if (version.resize == ">" && (!version.size["width"] || !version.size["height"])) {
-
+                sharp.min();
             }
             else if (version.resize == ">" && version.size["width"] && version.size["height"]) {
                 sharp.min();
@@ -41,8 +41,11 @@ module.exports = (forklift, instance, images, callback) => {
             }
 
             if (!version.output || version.output == "jpeg" || version.output == "jpg") {
-                console.log("fuck!");
-                sharp.jpeg().quality(80);
+                sharp.jpeg();
+
+                if (version.quality) {
+                    sharp.quality(version.quality);
+                }
             }
             else if (version.output == "png") {
                 sharp.png();
@@ -50,14 +53,16 @@ module.exports = (forklift, instance, images, callback) => {
             else {
                 return reduceCallback(new Error(`${version.output} is not valid for ${versionKey}:${image["schemaKey"]}`))
             }
+
+            sharp.progressive();
             
-            Tmp.file((error, path) => {
+            Tmp.file({postfix: "." + version.output}, (error, path) => {
 
                 if (error) {
                     return reduceCallback(error);
                 }
 
-                sharp.toFormat("jpeg").toFile(path, (error) => {
+                sharp.toFile(path, (error) => {
 
                     if (error) {
                         return reduceCallback(error);
@@ -65,9 +70,8 @@ module.exports = (forklift, instance, images, callback) => {
 
                     forklift.upload(path, remoteFolder + versionKey + "." + version.output, (error, url) => {
 
-                        console.log(error);
-                        console.log(url);
-                        return reduceCallback(null, {});
+                        uploaded[versionKey] = url;
+                        return reduceCallback(null, uploaded);
                     });
 
                 });
@@ -78,6 +82,7 @@ module.exports = (forklift, instance, images, callback) => {
             if (error) {
                 return eachCallback(error);
             }
+
             instance[image.schemaKey] = result;
             return eachCallback();
         });
