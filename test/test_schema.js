@@ -1,27 +1,28 @@
 /**
  *
- * Created by uur on 18/10/14.
- * 01.12.2015 -> new languages added.
+ *
  */
 
 module.exports = (mongoose) => {
+
     return new mongoose.Schema({
 
-        test_horizontal_image: {
+        test_image: {
             type: mongoose.Schema.Types["Image"],
-            size: {
-                width: 1024,
-                height: 512,
-                resize: ">"
+            versions: {
+                main: {
+                    size: "1920x1080",
+                    resize: "^",
+                    output: "jpeg",
+                    quality: 80
+                },
+                display2: "960x",
+                display3: "x960"
             }
         },
-        test_vertical_image: {
-            type: mongoose.Schema.Types["Image"],
-            size: {
-                width: 480,
-                height: 720,
-                resize: ">"
-            }
+        test_file: {
+            type: mongoose.Schema.Types["File"],
+            extension: ["pdf"]
         },
         test_title: {
             type: String,

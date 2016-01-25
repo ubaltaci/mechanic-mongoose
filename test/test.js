@@ -1,3 +1,4 @@
+const Path = require("path");
 const Chai = require("chai");
 const Mongoose = require("mongoose");
 
@@ -77,6 +78,7 @@ describe("Floppy", () => {
         let mongooseTest;
         let testSchema;
 
+        /*
         describe("Timestamp plugin", () => {
 
             before("Connect to Database", (done) => {
@@ -119,22 +121,72 @@ describe("Floppy", () => {
                             Expect(error).to.not.exist;
                             // Since its update, updatedAt and createdAt should not be same.
                             Expect(testInstance.createdAt).to.not.equal(testInstance.updatedAt);
-                            mongooseTest.connection.db.dropCollection("tests", function (error) {
-                                if (error) {
-                                    return done(error);
-                                }
-                                done();
-                            });
+                            done();
                         });
                     }, 2000);
 
                 });
             });
 
-            after("Disconnect from Database", () => {
+            after("Disconnect from Database", (done) => {
                 testSchema = null;
                 floppy = null;
-                mongooseTest.disconnect();
+                mongooseTest.connection.db.dropCollection("tests", function (error) {
+                    if (error) {
+                        return done(error);
+                    }
+                    mongooseTest.disconnect();
+                    done();
+                });
+            });
+        });
+
+        describe("ShortId plugin", () => {
+
+            before("Connect to Database", (done) => {
+
+                floppy = new Floppy({mongoose: Mongoose, s3: Config.s3});
+                mongooseTest = new Mongoose.Mongoose();
+                mongooseTest.connect(Config.mongourl, connectionOptions);
+                mongooseTest.connection.on("error", (error) => {
+                    return done(error);
+                });
+
+                mongooseTest.connection.once("open", () => {
+                    testSchema = TestSchema(mongooseTest);
+                    return done();
+                });
+            });
+
+            let testModel;
+
+            it("should register _id with string type", () => {
+                floppy.setPlugins(testSchema, ["timestamp", "slug", "shortid"]);
+                Expect(testSchema.tree).to.includes.keys(["_id"]);
+                Expect(testSchema.tree["_id"]["type"]).to.equal(mongooseTest.Schema.Types.String)
+            });
+
+            it("should create new item with _id with string type", (done) => {
+
+                testModel = mongooseTest.model("Test", testSchema);
+
+                testModel.create({test_title: "created"}, (error, instance) => {
+                    Expect(instance["_id"]).to.exist;
+                    Expect(instance["_id"]).to.be.a("string");
+                    done();
+                });
+            });
+
+            after("Disconnect from Database", (done) => {
+                testSchema = null;
+                floppy = null;
+                mongooseTest.connection.db.dropCollection("tests", function (error) {
+                    if (error) {
+                        return done(error);
+                    }
+                    mongooseTest.disconnect();
+                    done();
+                });
             });
         });
 
@@ -208,10 +260,75 @@ describe("Floppy", () => {
                 });
             });
 
-            after("Disconnect from Database", () => {
+            after("Disconnect from Database", (done) => {
                 testSchema = null;
                 floppy = null;
-                mongooseTest.disconnect();
+                mongooseTest.connection.db.dropCollection("tests", function (error) {
+                    if (error) {
+                        return done(error);
+                    }
+                    mongooseTest.disconnect();
+                    done();
+                });
+            });
+        });
+        */
+
+        describe("Attachment plugin", () => {
+
+            let testModel;
+
+            before("Connect to Database", (done) => {
+                floppy = new Floppy({mongoose: Mongoose, s3: Config.s3});
+                mongooseTest = new Mongoose.Mongoose();
+                mongooseTest.connect(Config.mongourl, connectionOptions);
+                mongooseTest.connection.on("error", (error) => {
+                    return done(error);
+                });
+
+                mongooseTest.connection.once("open", () => {
+                    testSchema = TestSchema(mongooseTest);
+                    testModel = mongooseTest.model("Test", testSchema);
+                    floppy.setPlugins(testSchema, ["attachment"]);
+                    return done();
+                });
+            });
+
+
+            it("should correctly upload image", (done) => {
+
+                //promotion_image:
+                //{ filename: 'Screen Shot 2016-01-24 at 06.52.28.png',
+                //    path: '/var/folders/dz/h_3rq0lj6mbfyqm59dz2tywr0000gn/T/1453611277136-2169-c347452fdaea81fc',
+                //    headers:
+                //    { 'content-disposition': 'form-data; name="promotion_image"; filename="Screen Shot 2016-01-24 at 06.52.28.png"',
+                //        'content-type': 'image/png' },
+                //    bytes: 56012 },
+
+
+                testModel.create({
+                    test_image: {
+                        filename: "test_image.png",
+                        path: Path.join(__dirname, "test_image.png")
+                    }
+                },(error, instance) => {
+                    Expect(error).to.not.exist;
+                    return done();
+                });
+            });
+
+            //it("should correctly upload file", (done) => {
+            //
+            //
+            //});
+
+            after("Disconnect from Database", (done) => {
+                testSchema = null;
+                floppy = null;
+                mongooseTest.connection.db.dropCollection("tests", function (error) {
+                    mongooseTest.disconnect();
+                    done();
+                });
             });
         });
 

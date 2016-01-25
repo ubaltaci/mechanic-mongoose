@@ -1,8 +1,9 @@
 {
   "s3": {
-    "accessKey": "AKIAIH376F246X6EZNMA",
-    "secretKey": "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",
-    "bucket": "kiosk_dev"
+    "bucket": "esentai",
+    "secretKey": "PQFW76nNxn5wbBirciz6xeDVKSHWMcqO1lS0lRdh",
+    "accessKey": "AKIAJ2AFXN4VIFMNVVNQ",
+    "region": "eu-west-1"
   },
   "mongourl": "mongodb://dekorasyonsa:232421@ds035975.mongolab.com:35975/dekorasyonsa"
 }

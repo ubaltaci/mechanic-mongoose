@@ -6,24 +6,81 @@
 "use strict";
 
 const Async = require("async");
+const Sharp = require("sharp");
+const Tmp = require("tmp");
+const Uuid = require("node-uuid");
 
-module.exports = (forklift, files, callback) => {
+module.exports = (forklift, instance, images, callback) => {
 
-    Async.map(files, (file, eachCallback) => {
+    Async.map(images, (image, eachCallback) => {
 
-        const instance = file.instance;
-        const key = file.key;
+        const localFilePath = instance[image["schemaKey"]]["path"];
+        const remoteFolder = `images/${image["schemaKey"]}/${Uuid.v4()}-`;
 
-        let extension;
-        try {
-            extension = instance[key]["filename"].split(".").pop();
-        }
-        catch (e) {
-            extension = file.kind instanceof Array ? file.kind[0] : file.kind;
-        }
+        Async.reduce(image.versions, {}, (uploaded, versionContainer, reduceCallback) => {
 
-        const s3_path = "files/" + file.uploadFolder + "/" + file.instance.id + "_" + file.key + "." + extension + "?" + Date.now();
+            const versionKey = Object.keys(versionContainer)[0];
+            const version = versionContainer[versionKey];
 
-        forklift.upload(file.instance[key].path, s3_path, {remove: true}, eachCallback);
+            const sharp = Sharp(localFilePath).resize(version.size["width"], version.size["height"]);
+            
+            if (!version.resize || version.resize == "!") {
+                sharp.ignoreAspectRatio();
+            }
+            else if (version.resize == "^") {
+
+            }
+            else if (version.resize == ">" && (!version.size["width"] || !version.size["height"])) {
+
+            }
+            else if (version.resize == ">" && version.size["width"] && version.size["height"]) {
+                sharp.min();
+            }
+            else {
+                return reduceCallback(new Error(`${version.resize} is not valid for ${versionKey}:${image["schemaKey"]}`))
+            }
+
+            if (!version.output || version.output == "jpeg" || version.output == "jpg") {
+                console.log("fuck!");
+                sharp.jpeg().quality(80);
+            }
+            else if (version.output == "png") {
+                sharp.png();
+            }
+            else {
+                return reduceCallback(new Error(`${version.output} is not valid for ${versionKey}:${image["schemaKey"]}`))
+            }
+            
+            Tmp.file((error, path) => {
+
+                if (error) {
+                    return reduceCallback(error);
+                }
+
+                sharp.toFormat("jpeg").toFile(path, (error) => {
+
+                    if (error) {
+                        return reduceCallback(error);
+                    }
+
+                    forklift.upload(path, remoteFolder + versionKey + "." + version.output, (error, url) => {
+
+                        console.log(error);
+                        console.log(url);
+                        return reduceCallback(null, {});
+                    });
+
+                });
+            });
+
+        }, (error, result) => {
+
+            if (error) {
+                return eachCallback(error);
+            }
+            instance[image.schemaKey] = result;
+            return eachCallback();
+        });
+
     }, callback);
 };

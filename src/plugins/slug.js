@@ -10,10 +10,10 @@ const ShortId = require("shortid");
 module.exports = (schema, options) => {
 
     const mongoose = options.mongoose;
-    const modelItems = Object.keys(schema.tree);
+    const schemaItems = Object.keys(schema.tree);
     const slugItems = [];
 
-    for (let modelItem of modelItems) {
+    for (let schemaItem of schemaItems) {
 
         /**
          * test_title: String
@@ -26,10 +26,10 @@ module.exports = (schema, options) => {
          *
          */
 
-        if (schema.tree[modelItem].slug
-            && (schema.tree[modelItem].type == String || (schema.tree[modelItem].type == mongoose.Schema.Types["String"]))) {
+        if (schema.tree[schemaItem].slug
+            && (schema.tree[schemaItem].type == String || (schema.tree[schemaItem].type == mongoose.Schema.Types["String"]))) {
 
-            const referenceKey = schema.tree[modelItem].slug;
+            const referenceKey = schema.tree[schemaItem].slug;
             if (schema.tree[referenceKey]) {
                 throw new Error(`Ref: ${referenceKey} in slug is used in another key.`);
             }
@@ -44,7 +44,7 @@ module.exports = (schema, options) => {
             });
 
             slugItems.push({
-                main: modelItem,
+                main: schemaItem,
                 slug: referenceKey
             });
         }

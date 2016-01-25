@@ -14,7 +14,7 @@ var ShortId = require("shortid");
 module.exports = function (schema, options) {
 
     var mongoose = options.mongoose;
-    var modelItems = Object.keys(schema.tree);
+    var schemaItems = Object.keys(schema.tree);
     var slugItems = [];
 
     var _iteratorNormalCompletion = true;
@@ -22,8 +22,8 @@ module.exports = function (schema, options) {
     var _iteratorError = undefined;
 
     try {
-        for (var _iterator = modelItems[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var modelItem = _step.value;
+        for (var _iterator = schemaItems[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var schemaItem = _step.value;
 
             /**
              * test_title: String
@@ -36,9 +36,9 @@ module.exports = function (schema, options) {
              *
              */
 
-            if (schema.tree[modelItem].slug && (schema.tree[modelItem].type == String || schema.tree[modelItem].type == mongoose.Schema.Types["String"])) {
+            if (schema.tree[schemaItem].slug && (schema.tree[schemaItem].type == String || schema.tree[schemaItem].type == mongoose.Schema.Types["String"])) {
 
-                var referenceKey = schema.tree[modelItem].slug;
+                var referenceKey = schema.tree[schemaItem].slug;
                 if (schema.tree[referenceKey]) {
                     throw new Error("Ref: " + referenceKey + " in slug is used in another key.");
                 }
@@ -51,7 +51,7 @@ module.exports = function (schema, options) {
                 }));
 
                 slugItems.push({
-                    main: modelItem,
+                    main: schemaItem,
                     slug: referenceKey
                 });
             }
@@ -100,14 +100,7 @@ function _createSlug(instance, slugItem, callback) {
             return callback(error);
         }
 
-        console.log(collapsedInstance);
-        console.log("------");
-        if (collapsedInstance) {
-            console.log(collapsedInstance._id.toString() != instance._id.toString());
-        }
-
         if (collapsedInstance && collapsedInstance._id.toString() != instance._id.toString()) {
-            console.log("1 collapsed");
             instance[slugItem.slug] = slugValue + "-" + ShortId.generate();
             return callback();
         }
