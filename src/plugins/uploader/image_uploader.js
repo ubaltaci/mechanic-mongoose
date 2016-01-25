@@ -14,7 +14,7 @@ module.exports = (forklift, instance, images, callback) => {
     Async.each(images, (image, eachCallback) => {
 
         const localFilePath = instance[image["schemaKey"]]["path"];
-        const remoteFolder = `images/${image["schemaKey"]}/${Uuid.v4()}-`;
+        const remoteFolder = `images/${image["schemaKey"]}/${instance._id}-`;
 
         Async.reduce(image.versions, {}, (uploaded, versionContainer, reduceCallback) => {
 
