@@ -20,6 +20,12 @@ module.exports = (mongoose) => {
                 display3: "x960"
             }
         },
+
+        test_image_2: {
+            type: mongoose.Schema.Types["Image"],
+            versions: "1920x1080"
+        },
+
         test_file: {
             type: mongoose.Schema.Types["File"],
             extension: ["png"]

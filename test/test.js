@@ -314,6 +314,23 @@ describe("Floppy", () => {
                 });
             });
 
+            it("should correctly upload image with main_version", (done) => {
+
+                testModel.create({
+                    test_image_2: {
+                        filename: "test_image.png",
+                        path: Path.join(__dirname, "test_image.png")
+                    }
+                }, (error, instance) => {
+
+                    Expect(error).to.not.exist;
+                    Expect(instance).to.exist;
+                    Expect(instance.test_image_2).to.exist;
+                    Expect(instance.test_image_2.main).to.exist;
+                    return done();
+                });
+            });
+
             it("should correctly upload file", (done) => {
                 testModel.create({
                     test_file: {

@@ -72,6 +72,16 @@ module.exports = function (schema, options) {
             if (schema.tree[schemaItem].type == mongoose.Schema.Types["Image"]) {
 
                 var versions = schema.tree[schemaItem]["versions"] || {};
+
+                if (typeof versions === "string" || versions instanceof String) {
+
+                    attachments.images.push({
+                        schemaKey: schemaItem,
+                        versions: [_defineProperty({}, "main", _transformImageDesc(versions, schemaItem))]
+                    });
+                    continue;
+                }
+
                 var versionKeys = Object.keys(versions);
                 if (versionKeys.indexOf("original") != -1) {
                     throw new Error(schemaItem + " contains 'original' key which do not valid.");

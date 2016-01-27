@@ -8,14 +8,13 @@
 var Async = require("async");
 var Sharp = require("sharp");
 var Tmp = require("tmp");
-var Uuid = require("node-uuid");
 
 module.exports = function (forklift, instance, images, callback) {
 
     Async.each(images, function (image, eachCallback) {
 
         var localFilePath = instance[image["schemaKey"]]["path"];
-        var remoteFolder = "images/" + image["schemaKey"] + "/" + Uuid.v4() + "-";
+        var remoteFolder = "images/" + image["schemaKey"] + "/" + instance._id + "-";
 
         Async.reduce(image.versions, {}, function (uploaded, versionContainer, reduceCallback) {
 
