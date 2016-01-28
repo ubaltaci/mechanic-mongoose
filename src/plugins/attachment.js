@@ -161,7 +161,6 @@ module.exports = (schema, options) => {
 
             "uploadFiles": (autoCallback) => {
 
-                console.log("2");
                 if (!attachments.files) {
                     return autoCallback();
                 }
@@ -174,10 +173,7 @@ module.exports = (schema, options) => {
                 }
                 return ImageUploader(forklift, instance, images, autoCallback);
             }
-        }, (error, result) => {
-            console.log(error);
-            return next();
-        });
+        }, next);
 
     });
 };
