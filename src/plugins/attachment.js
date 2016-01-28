@@ -105,7 +105,7 @@ module.exports = (schema, options) => {
             });
         }
     }
-
+    
     const forklift = new Forklift(s3);
 
     schema.pre("save", function (next) {
@@ -156,10 +156,12 @@ module.exports = (schema, options) => {
             });
         }
 
+
         Async.auto({
 
             "uploadFiles": (autoCallback) => {
 
+                console.log("2");
                 if (!attachments.files) {
                     return autoCallback();
                 }
@@ -172,7 +174,10 @@ module.exports = (schema, options) => {
                 }
                 return ImageUploader(forklift, instance, images, autoCallback);
             }
-        }, next);
+        }, (error, result) => {
+            console.log(error);
+            return next();
+        });
 
     });
 };

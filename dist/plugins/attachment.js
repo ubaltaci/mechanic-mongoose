@@ -238,6 +238,7 @@ module.exports = function (schema, options) {
 
             "uploadFiles": function uploadFiles(autoCallback) {
 
+                console.log("2");
                 if (!attachments.files) {
                     return autoCallback();
                 }
@@ -250,7 +251,10 @@ module.exports = function (schema, options) {
                 }
                 return ImageUploader(forklift, instance, images, autoCallback);
             }
-        }, next);
+        }, function (error, result) {
+            console.log(error);
+            return next();
+        });
     });
 };
 

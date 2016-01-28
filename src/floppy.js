@@ -64,6 +64,8 @@ class Floppy {
 
     setPlugins(schema, overridePlugins = []) {
 
+        console.log(schema);
+        
         let plugins = this.defaultPlugins;
         if (overridePlugins && overridePlugins.length > 0) {
             let result = Joi.validate(overridePlugins, AvailablePluginsSchema);
@@ -76,6 +78,8 @@ class Floppy {
 
         for(let plugin of plugins) {
 
+            console.log(plugin);
+            
             AvailablePlugins[plugin](schema, this.options);
         }
     }

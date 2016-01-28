@@ -11,6 +11,8 @@ var Tmp = require("tmp");
 
 module.exports = function (forklift, instance, images, callback) {
 
+    console.log("4");
+
     Async.each(images, function (image, eachCallback) {
 
         var localFilePath = instance[image["schemaKey"]]["path"];
@@ -18,6 +20,7 @@ module.exports = function (forklift, instance, images, callback) {
 
         Async.reduce(image.versions, {}, function (uploaded, versionContainer, reduceCallback) {
 
+            console.log("5");
             var versionKey = Object.keys(versionContainer)[0];
             var version = versionContainer[versionKey];
 
@@ -45,14 +48,17 @@ module.exports = function (forklift, instance, images, callback) {
                 return reduceCallback(new Error(version.output + " is not valid for " + versionKey + ":" + image["schemaKey"]));
             }
 
+            console.log("6");
             sharp.progressive();
 
             Tmp.file({ postfix: "." + version.output }, function (error, path) {
 
+                console.log("7");
                 if (error) {
                     return reduceCallback(error);
                 }
 
+                console.log("8");
                 sharp.toFile(path, function (error) {
 
                     if (error) {
@@ -60,6 +66,10 @@ module.exports = function (forklift, instance, images, callback) {
                     }
 
                     forklift.upload(path, remoteFolder + versionKey + "." + version.output, function (error, url) {
+
+                        console.log(error);
+                        console.log("8.1");
+                        console.log(url);
 
                         uploaded[versionKey] = url;
                         return reduceCallback(null, uploaded);
