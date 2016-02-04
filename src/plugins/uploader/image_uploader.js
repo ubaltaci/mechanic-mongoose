@@ -42,6 +42,7 @@ module.exports = (forklift, instance, images, callback) => {
             if (!version.output || version.output == "jpeg" || version.output == "jpg") {
 
                 sharp.background({r: 255, g: 255, b: 255, a: 1});
+                sharp.flatten();
                 sharp.jpeg();
 
                 if (version.quality) {

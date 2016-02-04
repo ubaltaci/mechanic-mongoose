@@ -34,12 +34,16 @@ module.exports = function (forklift, instance, images, callback) {
             }
 
             if (!version.output || version.output == "jpeg" || version.output == "jpg") {
+
+                sharp.background({ r: 255, g: 255, b: 255, a: 1 });
+                sharp.flatten();
                 sharp.jpeg();
 
                 if (version.quality) {
                     sharp.quality(version.quality);
                 }
             } else if (version.output == "png") {
+
                 sharp.png();
             } else {
                 return reduceCallback(new Error(version.output + " is not valid for " + versionKey + ":" + image["schemaKey"]));
