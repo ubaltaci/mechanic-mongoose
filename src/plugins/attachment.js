@@ -147,6 +147,7 @@ module.exports = (schema, options) => {
             }
 
             const ext = _getExtension(instance[schemaKey].filename);
+
             if (fileField["extensions"].indexOf(ext) == -1) {
                 return next(new Error(`${schemaKey} has not valid extension: ${ext}`));
             }

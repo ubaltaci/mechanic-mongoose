@@ -211,6 +211,7 @@ module.exports = function (schema, options) {
                 }
 
                 var ext = _getExtension(instance[schemaKey].filename);
+
                 if (fileField["extensions"].indexOf(ext) == -1) {
                     return next(new Error(schemaKey + " has not valid extension: " + ext));
                 }

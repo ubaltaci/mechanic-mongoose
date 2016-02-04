@@ -22,7 +22,7 @@ module.exports = (forklift, instance, images, callback) => {
             const version = versionContainer[versionKey];
 
             const sharp = Sharp(localFilePath).resize(version.size["width"], version.size["height"]);
-            
+
             if (!version.resize || version.resize == "!") {
                 sharp.ignoreAspectRatio();
             }
@@ -40,6 +40,8 @@ module.exports = (forklift, instance, images, callback) => {
             }
 
             if (!version.output || version.output == "jpeg" || version.output == "jpg") {
+
+                sharp.background({r: 255, g: 255, b: 255, a: 1});
                 sharp.jpeg();
 
                 if (version.quality) {
@@ -47,6 +49,7 @@ module.exports = (forklift, instance, images, callback) => {
                 }
             }
             else if (version.output == "png") {
+
                 sharp.png();
             }
             else {
@@ -54,7 +57,7 @@ module.exports = (forklift, instance, images, callback) => {
             }
 
             sharp.progressive();
-            
+
             Tmp.file({postfix: "." + version.output}, (error, path) => {
 
                 if (error) {
@@ -72,7 +75,7 @@ module.exports = (forklift, instance, images, callback) => {
                         if (error) {
                             return reduceCallback(error);
                         }
-                        
+
                         uploaded[versionKey] = url;
                         return reduceCallback(null, uploaded);
                     });
