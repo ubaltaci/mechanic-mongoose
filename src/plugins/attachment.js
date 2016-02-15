@@ -209,8 +209,6 @@ function _transformImageDesc(versionImage, schemaItem) {
         Image["resize"] = _transformResize(versionImage["resize"], schemaItem);
     }
 
-    console.log(Image);
-
     return Image;
 }
 
