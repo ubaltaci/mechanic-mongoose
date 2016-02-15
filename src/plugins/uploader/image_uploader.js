@@ -21,22 +21,24 @@ module.exports = (forklift, instance, images, callback) => {
             const versionKey = Object.keys(versionContainer)[0];
             const version = versionContainer[versionKey];
 
-            const sharp = Sharp(localFilePath).resize(version.size["width"], version.size["height"]);
+            const sharp = Sharp(localFilePath);
 
-            if (!version.resize || version.resize == "!") {
-                sharp.ignoreAspectRatio();
-            }
-            else if (version.resize == "^") {
+            if (version.size["width"] != 0 && version.size["height"] != 0) {
 
-            }
-            else if (version.resize == ">" && (!version.size["width"] || !version.size["height"])) {
-                sharp.min();
-            }
-            else if (version.resize == ">" && version.size["width"] && version.size["height"]) {
-                sharp.min();
-            }
-            else {
-                return reduceCallback(new Error(`${version.resize} is not valid for ${versionKey}:${image["schemaKey"]}`))
+                sharp.resize(version.size["width"], version.size["height"]);
+                if (!version.resize || version.resize == "!") {
+                    sharp.ignoreAspectRatio();
+                }
+                else if (version.resize == ">") {
+                    sharp.max();
+                    sharp.withoutEnlargement();
+                }
+                else if (version.resize == "<") {
+                    sharp.min();
+                }
+                else {
+                    return reduceCallback(new Error(`${version.resize} is not valid for ${versionKey}:${image["schemaKey"]}`))
+                }
             }
 
             if (!version.output || version.output == "jpeg" || version.output == "jpg") {

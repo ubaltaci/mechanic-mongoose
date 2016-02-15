@@ -21,16 +21,21 @@ module.exports = function (forklift, instance, images, callback) {
             var versionKey = Object.keys(versionContainer)[0];
             var version = versionContainer[versionKey];
 
-            var sharp = Sharp(localFilePath).resize(version.size["width"], version.size["height"]);
+            var sharp = Sharp(localFilePath);
 
-            if (!version.resize || version.resize == "!") {
-                sharp.ignoreAspectRatio();
-            } else if (version.resize == "^") {} else if (version.resize == ">" && (!version.size["width"] || !version.size["height"])) {
-                sharp.min();
-            } else if (version.resize == ">" && version.size["width"] && version.size["height"]) {
-                sharp.min();
-            } else {
-                return reduceCallback(new Error(version.resize + " is not valid for " + versionKey + ":" + image["schemaKey"]));
+            if (version.size["width"] != 0 && version.size["height"] != 0) {
+
+                sharp.resize(version.size["width"], version.size["height"]);
+                if (!version.resize || version.resize == "!") {
+                    sharp.ignoreAspectRatio();
+                } else if (version.resize == ">") {
+                    sharp.max();
+                    sharp.withoutEnlargement();
+                } else if (version.resize == "<") {
+                    sharp.min();
+                } else {
+                    return reduceCallback(new Error(version.resize + " is not valid for " + versionKey + ":" + image["schemaKey"]));
+                }
             }
 
             if (!version.output || version.output == "jpeg" || version.output == "jpg") {

@@ -25,6 +25,7 @@ module.exports = function (schema, options) {
         for (var _iterator = schemaItems[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var schemaItem = _step.value;
 
+
             /**
              * test_title: String
              * olamaz, propertylerinde slug: "slug_key" olması lazım.
@@ -39,6 +40,7 @@ module.exports = function (schema, options) {
             if (schema.tree[schemaItem].slug && (schema.tree[schemaItem].type == String || schema.tree[schemaItem].type == mongoose.Schema.Types["String"])) {
 
                 var referenceKey = schema.tree[schemaItem].slug;
+
                 if (schema.tree[referenceKey]) {
                     throw new Error("Ref: " + referenceKey + " in slug is used in another key.");
                 }

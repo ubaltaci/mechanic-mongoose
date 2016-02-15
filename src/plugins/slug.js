@@ -29,7 +29,9 @@ module.exports = (schema, options) => {
         if (schema.tree[schemaItem].slug
             && (schema.tree[schemaItem].type == String || (schema.tree[schemaItem].type == mongoose.Schema.Types["String"]))) {
 
+
             const referenceKey = schema.tree[schemaItem].slug;
+
             if (schema.tree[referenceKey]) {
                 throw new Error(`Ref: ${referenceKey} in slug is used in another key.`);
             }

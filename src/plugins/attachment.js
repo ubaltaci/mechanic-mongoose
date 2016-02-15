@@ -9,6 +9,7 @@ const Async = require("async");
 const Forklift = require("s3-forklift");
 const FileUploader = require("./uploader/file_uploader");
 const ImageUploader = require("./uploader/image_uploader");
+const CheckAttachments = require("./validation/check_attachments");
 
 /**
  * @param schema
@@ -16,6 +17,12 @@ const ImageUploader = require("./uploader/image_uploader");
  */
 
 module.exports = (schema, options) => {
+
+    schema.statics.checkAttachments = (payload, instance, schema, errors) => {
+
+        CheckAttachments(payload, instance, schema, errors);
+        return errors;
+    };
 
     const mongoose = options.mongoose;
     const s3 = options.s3;
@@ -66,7 +73,7 @@ module.exports = (schema, options) => {
             const versions = schema.tree[schemaItem]["versions"] || {};
 
             if (typeof versions === "string" || versions instanceof String) {
-                
+
                 attachments.images.push({
                     schemaKey: schemaItem,
                     versions: [
@@ -105,7 +112,7 @@ module.exports = (schema, options) => {
             });
         }
     }
-    
+
     const forklift = new Forklift(s3);
 
     schema.pre("save", function (next) {
@@ -157,7 +164,6 @@ module.exports = (schema, options) => {
             });
         }
 
-
         Async.auto({
 
             "uploadFiles": (autoCallback) => {
@@ -191,17 +197,19 @@ function _transformImageDesc(versionImage, schemaItem) {
 
     const Image = {
         output: "jpeg",
-        resize: "^"
+        resize: ">"
     };
 
     if (typeof versionImage === "string" || versionImage instanceof String) {
         Image["size"] = _transformSize(versionImage, schemaItem);
     }
     else { // object
-        Image["size"] = _transformSize(versionImage["size"]);
+        Image["size"] = _transformSize(versionImage["size"], schemaItem);
         Image["output"] = _transformOutput(versionImage["output"], schemaItem);
         Image["resize"] = _transformResize(versionImage["resize"], schemaItem);
     }
+
+    console.log(Image);
 
     return Image;
 }
@@ -222,10 +230,10 @@ function _transformOutput(output, schemaItem) {
 function _transformResize(resize, schemaItem) {
 
     if (!resize) {
-        return "^";
+        return ">";
     }
 
-    if (["^", ">", "!"].indexOf(resize) == -1) {
+    if ([">", "<", "!"].indexOf(resize) == -1) {
         throw new Error(`schemaItem: ${schemaItem}, resize:"${resize}" is not valid`);
     }
 
@@ -236,6 +244,13 @@ function _transformSize(size, schemaItem) {
 
     if (!size) {
         throw new Error(`schemaItem: ${schemaItem}, size is not exist in image.`);
+    }
+
+    if (size == "keep") {
+        return {
+            width: 0,
+            height: 0
+        }
     }
 
     const sizeArray = size.split("x");
@@ -266,7 +281,7 @@ function _getExtension(fileName) {
     try {
         return fileName && fileName.split(".")[1]
     }
-    catch(e) {
+    catch (e) {
         return "";
     }
 }

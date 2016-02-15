@@ -59,8 +59,10 @@ var Floppy = function () {
      * @returns {[string]}
      */
 
+
     _createClass(Floppy, [{
         key: "_registerTypes",
+
 
         /**
          * Register gives types
@@ -98,6 +100,7 @@ var Floppy = function () {
         value: function setPlugins(schema) {
             var overridePlugins = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
 
+
             var plugins = this.defaultPlugins;
             if (overridePlugins && overridePlugins.length > 0) {
                 var result = Joi.validate(overridePlugins, AvailablePluginsSchema);
@@ -115,6 +118,7 @@ var Floppy = function () {
             try {
                 for (var _iterator2 = plugins[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                     var plugin = _step2.value;
+
 
                     AvailablePlugins[plugin](schema, this.options);
                 }

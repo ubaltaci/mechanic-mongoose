@@ -11,6 +11,7 @@ var Async = require("async");
 var Forklift = require("s3-forklift");
 var FileUploader = require("./uploader/file_uploader");
 var ImageUploader = require("./uploader/image_uploader");
+var CheckAttachments = require("./validation/check_attachments");
 
 /**
  * @param schema
@@ -18,6 +19,12 @@ var ImageUploader = require("./uploader/image_uploader");
  */
 
 module.exports = function (schema, options) {
+
+    schema.statics.checkAttachments = function (payload, instance, schema, errors) {
+
+        CheckAttachments(payload, instance, schema, errors);
+        return errors;
+    };
 
     var mongoose = options.mongoose;
     var s3 = options.s3;
@@ -40,6 +47,7 @@ module.exports = function (schema, options) {
     try {
         for (var _iterator = schemaItems[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var schemaItem = _step.value;
+
 
             /**
              *
@@ -95,6 +103,7 @@ module.exports = function (schema, options) {
                 try {
                     for (var _iterator4 = versionKeys[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
                         var versionKey = _step4.value;
+
 
                         if (versionKey == "type") {
                             continue;
@@ -161,6 +170,7 @@ module.exports = function (schema, options) {
             for (var _iterator2 = attachments.images[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                 var imageField = _step2.value;
 
+
                 var schemaKey = imageField["schemaKey"];
 
                 if (!instance[schemaKey] || !instance.isModified(schemaKey)) {
@@ -199,6 +209,7 @@ module.exports = function (schema, options) {
         try {
             for (var _iterator3 = attachments.files[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
                 var fileField = _step3.value;
+
 
                 var schemaKey = fileField["schemaKey"];
 
@@ -267,17 +278,19 @@ function _transformImageDesc(versionImage, schemaItem) {
 
     var Image = {
         output: "jpeg",
-        resize: "^"
+        resize: ">"
     };
 
     if (typeof versionImage === "string" || versionImage instanceof String) {
         Image["size"] = _transformSize(versionImage, schemaItem);
     } else {
         // object
-        Image["size"] = _transformSize(versionImage["size"]);
+        Image["size"] = _transformSize(versionImage["size"], schemaItem);
         Image["output"] = _transformOutput(versionImage["output"], schemaItem);
         Image["resize"] = _transformResize(versionImage["resize"], schemaItem);
     }
+
+    console.log(Image);
 
     return Image;
 }
@@ -298,10 +311,10 @@ function _transformOutput(output, schemaItem) {
 function _transformResize(resize, schemaItem) {
 
     if (!resize) {
-        return "^";
+        return ">";
     }
 
-    if (["^", ">", "!"].indexOf(resize) == -1) {
+    if ([">", "<", "!"].indexOf(resize) == -1) {
         throw new Error("schemaItem: " + schemaItem + ", resize:\"" + resize + "\" is not valid");
     }
 
@@ -312,6 +325,13 @@ function _transformSize(size, schemaItem) {
 
     if (!size) {
         throw new Error("schemaItem: " + schemaItem + ", size is not exist in image.");
+    }
+
+    if (size == "keep") {
+        return {
+            width: 0,
+            height: 0
+        };
     }
 
     var sizeArray = size.split("x");
