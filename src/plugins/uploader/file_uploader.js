@@ -6,13 +6,14 @@
 "use strict";
 
 const Async = require("async");
+const Slug = require("speakingurl");
 
 module.exports = (forklift, instance, files, callback) => {
 
     Async.each(files, (file, eachCallback) => {
 
         const localFilePath = instance[file["schemaKey"]]["path"];
-        const remoteFolder = `files/${file["schemaKey"]}/${instance._id}-${instance[file["schemaKey"]]["filename"]}`;
+        const remoteFolder = `files/${file["schemaKey"]}/${instance._id}-${Slug(instance[file["schemaKey"]]["filename"])}`;
 
         forklift.upload(localFilePath, remoteFolder, (error, url) => {
 

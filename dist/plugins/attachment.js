@@ -278,7 +278,7 @@ function _transformImageDesc(versionImage, schemaItem) {
 
     var Image = {
         output: "jpeg",
-        resize: ">"
+        resize: "!"
     };
 
     if (typeof versionImage === "string" || versionImage instanceof String) {
@@ -309,7 +309,7 @@ function _transformOutput(output, schemaItem) {
 function _transformResize(resize, schemaItem) {
 
     if (!resize) {
-        return ">";
+        return "!";
     }
 
     if ([">", "<", "!"].indexOf(resize) == -1) {
