@@ -211,24 +211,27 @@ module.exports = function (schema, options) {
                 var fileField = _step3.value;
 
 
-                var schemaKey = fileField["schemaKey"];
+                var _schemaKey = fileField["schemaKey"];
 
-                if (!instance[schemaKey] || !instance.isModified(schemaKey)) {
+                if (!instance[_schemaKey] || !instance.isModified(_schemaKey)) {
                     continue;
                 }
 
-                if (!instance[schemaKey].path || !instance[schemaKey].filename) {
-                    return next(new Error(schemaKey + " is not valid in instance: " + instance[schemaKey]));
+                if (!instance[_schemaKey].path || !instance[_schemaKey].filename) {
+                    return next(new Error(_schemaKey + " is not valid in instance: " + instance[_schemaKey]));
                 }
 
-                var ext = _getExtension(instance[schemaKey].filename);
+                var ext = _getExtension(instance[_schemaKey].filename);
+                var name = _getFileName(instance[_schemaKey].filename);
 
                 if (fileField["extensions"].indexOf(ext) == -1) {
-                    return next(new Error(schemaKey + " has not valid extension: " + ext));
+                    return next(new Error(_schemaKey + " has not valid extension: " + ext));
                 }
 
                 files.push({
-                    schemaKey: schemaKey
+                    schemaKey: _schemaKey,
+                    name: name,
+                    ext: ext
                 });
             }
         } catch (err) {
@@ -337,8 +340,8 @@ function _transformSize(size, schemaItem) {
         throw new Error("schemaItem: " + schemaItem + ", size:\"" + size + "\" is not valid");
     }
 
-    var width = undefined;
-    var height = undefined;
+    var width = void 0;
+    var height = void 0;
 
     try {
         width = sizeArray[0] ? parseInt(sizeArray[0]) : null;
@@ -351,6 +354,15 @@ function _transformSize(size, schemaItem) {
         width: width,
         height: height
     };
+}
+
+function _getFileName(fileName) {
+
+    try {
+        return fileName && fileName.split(".")[0];
+    } catch (e) {
+        return "";
+    }
 }
 
 function _getExtension(fileName) {

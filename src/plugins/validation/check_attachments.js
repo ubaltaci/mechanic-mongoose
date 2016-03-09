@@ -12,7 +12,9 @@ module.exports = function (payload, instance, schema, errors) {
         isUpdate = true;
     }
 
-    Object.keys(schema.tree).forEach((key) => {
+    const schemaKeys = Object.keys(schema.tree);
+
+    for (let key of schemaKeys) {
 
         const schemaItem = schema.tree[key];
 
@@ -23,6 +25,7 @@ module.exports = function (payload, instance, schema, errors) {
 
             if (!payload[key]) {
                 // skip fot not included record keys
+                continue;
             }
             if (!payload[key].filename || !payload[key].path) {
 
@@ -79,5 +82,5 @@ module.exports = function (payload, instance, schema, errors) {
                 }
             }
         }
-    });
+    }
 };
