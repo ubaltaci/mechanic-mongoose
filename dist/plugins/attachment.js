@@ -20,18 +20,18 @@ var CheckAttachments = require("./validation/check_attachments");
 
 module.exports = function (schema, options) {
 
-    schema.statics.checkAttachments = function (payload, instance, schema, errors) {
-
-        CheckAttachments(payload, instance, schema, errors);
-        return errors;
-    };
-
     var mongoose = options.mongoose;
     var s3 = options.s3;
 
     if (!s3 || !mongoose) {
         console.log("Options passed to mechanic-mongoose does not contain s3 credentials.");
     }
+
+    schema.statics.checkAttachments = function (payload, instance, schema, errors) {
+
+        CheckAttachments(mongoose, payload, instance, schema, errors);
+        return errors;
+    };
 
     var schemaItems = Object.keys(schema.tree);
 

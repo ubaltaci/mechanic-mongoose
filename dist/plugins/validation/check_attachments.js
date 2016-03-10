@@ -1,17 +1,12 @@
 /**
  * Check attachments uploaded with multipart-form.
  */
+
 "use strict";
 
-var Mongoose = require("mongoose");
+module.exports = function (mongoose, payload, instance, schema, errors) {
 
-module.exports = function (payload, instance, schema, errors) {
-
-    var isUpdate = false;
-    if (instance) {
-        // update operation
-        isUpdate = true;
-    }
+    var isUpdate = !!instance;
 
     var schemaKeys = Object.keys(schema.tree);
 
@@ -23,67 +18,72 @@ module.exports = function (payload, instance, schema, errors) {
         for (var _iterator = schemaKeys[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var key = _step.value;
 
-
             var schemaItem = schema.tree[key];
 
-            if (schemaItem.type == Mongoose.SchemaTypes.Image || schemaItem.type == Mongoose.SchemaTypes.File) {
+            if (!schemaItem.type) {
+                continue;
+            }
 
-                var isRequired = schemaItem.required;
+            if (schemaItem.type != mongoose.Schema.Types.Image && schemaItem.type != mongoose.Schema.Types.File) {
+                continue;
+            }
 
-                if (!payload[key]) {
-                    // skip fot not included record keys
-                    continue;
+            var isRequired = schemaItem.required;
+            var itemPayload = payload[key] && payload[key].filename;
+
+            if (!itemPayload) {
+                // filename/payload empty!
+
+                delete payload[key];
+
+                if (isRequired && !isUpdate || isRequired && isUpdate && !instance[key]) {
+                    errors.push({
+                        key: key,
+                        msg: "can not be blank."
+                    });
                 }
-                if (!payload[key].filename || !payload[key].path) {
+            } else {
+                // filename/payload exist
 
-                    if (isRequired && !isUpdate) {
+                try {
+                    var ext = payload[key].filename.split(".")[1];
+
+                    if (schemaItem.type == mongoose.Schema.Types.Image && ["jpg", "jpeg", "png"].indexOf(ext.toLocaleLowerCase()) == -1) {
+
+                        delete payload[key];
                         errors.push({
                             key: key,
-                            msg: "can not be blank."
-                        });
-                    } else if (isRequired && isUpdate && !instance[key]) {
-                        errors.push({
-                            key: key,
-                            msg: "can not be blank."
+                            msg: "uploaded file not a valid image, expected: jpg or png."
                         });
                     }
-                    delete payload[key];
-                } else {
-                    if (schemaItem.type == Mongoose.SchemaTypes.Image) {
-
-                        var contentTypes = payload[key]["headers"]["content-type"].split("/");
-                        if (contentTypes[0] != "image") {
-                            delete payload[key];
-                            errors.push({
-                                key: key,
-                                msg: "uploaded file not an image."
-                            });
-                        } else if (["jpg", "jpeg", "png"].indexOf(contentTypes[1].toLocaleLowerCase()) == -1) {
-                            delete payload[key];
-                            errors.push({
-                                key: key,
-                                msg: "uploaded file not a valid image, expected: jpg or png."
-                            });
-                        }
-                    }
-                    if (schemaItem.type == Mongoose.SchemaTypes.File) {
-
-                        var filenameParts = payload[key].filename.split(".");
-                        var ext = filenameParts.pop();
+                    if (schemaItem.type == mongoose.Schema.Types.File) {
 
                         var expected = schemaItem.extension;
+
+                        if (!expected) {
+                            continue;
+                        }
+
                         if (!(schemaItem.extension instanceof Array)) {
                             expected = [expected];
                         }
-
                         if (expected.indexOf(ext) == -1) {
+
                             delete payload[key];
+
                             errors.push({
                                 key: key,
-                                msg: "uploaded file has wrong type, expected: " + schemaItem.kind
+                                msg: "uploaded file has wrong type, expected: " + expected.join(",")
                             });
                         }
                     }
+                } catch (e) {
+
+                    delete payload[key];
+                    errors.push({
+                        key: key,
+                        msg: "not a valid file"
+                    });
                 }
             }
         }
