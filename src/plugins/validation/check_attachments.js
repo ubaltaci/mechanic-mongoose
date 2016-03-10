@@ -1,6 +1,7 @@
 /**
  * Check attachments uploaded with multipart-form.
  */
+
 "use strict";
 
 const Mongoose = require("mongoose");
@@ -74,9 +75,12 @@ module.exports = function (payload, instance, schema, errors) {
 
                     if (expected.indexOf(ext) == -1) {
                         delete payload[key];
+
+                        const expected = schemaItem.kind ? (Array.isArray(schemaItem.kind) ? schemaItem.kind.join(", ") : schemaItem.kind) : "";
+
                         errors.push({
                             key: key,
-                            msg: "uploaded file has wrong type, expected: " + schemaItem.kind
+                            msg: "uploaded file has wrong type, expected: " + expected
                         });
                     }
                 }
