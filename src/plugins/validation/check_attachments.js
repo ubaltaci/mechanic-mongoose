@@ -40,7 +40,7 @@ module.exports = function (mongoose, payload, instance, schema, errors) {
         else { // filename/payload exist
 
             try {
-                const ext = payload[key].filename.split(".")[1];
+                const ext = payload[key].filename.split(".").pop();
 
                 if (schemaItem.type == mongoose.Schema.Types.Image && ["jpg", "jpeg", "png"].indexOf(ext.toLocaleLowerCase()) == -1) {
 

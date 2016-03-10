@@ -18,6 +18,7 @@ module.exports = function (mongoose, payload, instance, schema, errors) {
         for (var _iterator = schemaKeys[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var key = _step.value;
 
+
             var schemaItem = schema.tree[key];
 
             if (!schemaItem.type) {
