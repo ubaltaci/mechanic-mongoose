@@ -21,6 +21,8 @@ module.exports = function (forklift, instance, images, callback) {
             var versionKey = Object.keys(versionContainer)[0];
             var version = versionContainer[versionKey];
 
+            console.log(localFilePath);
+
             var sharp = Sharp(localFilePath);
 
             if (version.size["width"] != 0 && version.size["height"] != 0) {
@@ -68,7 +70,13 @@ module.exports = function (forklift, instance, images, callback) {
                         return reduceCallback(error);
                     }
 
+                    console.log(versionKey);
+
                     forklift.upload(path, remoteFolder + versionKey + "." + version.output, function (error, url) {
+
+                        console.log(error);
+                        console.log(path);
+                        console.log(url);
 
                         if (error) {
                             return reduceCallback(error);
@@ -84,6 +92,8 @@ module.exports = function (forklift, instance, images, callback) {
             if (error) {
                 return eachCallback(error);
             }
+
+            console.log(image.schemaKey);
 
             instance[image.schemaKey] = result;
             return eachCallback();

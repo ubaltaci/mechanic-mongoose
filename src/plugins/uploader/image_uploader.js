@@ -10,7 +10,7 @@ const Sharp = require("sharp");
 const Tmp = require("tmp");
 
 module.exports = (forklift, instance, images, callback) => {
-
+    
     Async.each(images, (image, eachCallback) => {
 
         const localFilePath = instance[image["schemaKey"]]["path"];
