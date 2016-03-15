@@ -21,12 +21,15 @@ module.exports = function (forklift, instance, images, callback) {
             var versionKey = Object.keys(versionContainer)[0];
             var version = versionContainer[versionKey];
 
-            console.log(localFilePath);
-
             var sharp = Sharp(localFilePath);
 
-            if (version.size["width"] != 0 && version.size["height"] != 0) {
+            console.log(version.size["width"]);
+            console.log(version.size["height"]);
 
+            sharp.resize(version.size["width"], version.size["height"]);
+
+            if (version.size["width"] && version.size["width"] != 0 && version.size["height"] && version.size["height"] != 0) {
+                
                 sharp.resize(version.size["width"], version.size["height"]);
                 if (!version.resize || version.resize == "!") {
                     sharp.ignoreAspectRatio();
@@ -39,6 +42,9 @@ module.exports = function (forklift, instance, images, callback) {
                     return reduceCallback(new Error(version.resize + " is not valid for " + versionKey + ":" + image["schemaKey"]));
                 }
             }
+
+            console.log("2");
+            
 
             if (!version.output || version.output == "jpeg" || version.output == "jpg") {
 
@@ -70,13 +76,7 @@ module.exports = function (forklift, instance, images, callback) {
                         return reduceCallback(error);
                     }
 
-                    console.log(versionKey);
-
                     forklift.upload(path, remoteFolder + versionKey + "." + version.output, function (error, url) {
-
-                        console.log(error);
-                        console.log(path);
-                        console.log(url);
 
                         if (error) {
                             return reduceCallback(error);
@@ -92,8 +92,6 @@ module.exports = function (forklift, instance, images, callback) {
             if (error) {
                 return eachCallback(error);
             }
-
-            console.log(image.schemaKey);
 
             instance[image.schemaKey] = result;
             return eachCallback();

@@ -23,9 +23,11 @@ module.exports = (forklift, instance, images, callback) => {
 
             const sharp = Sharp(localFilePath);
 
-            if (version.size["width"] != 0 && version.size["height"] != 0) {
+            
+            sharp.resize(version.size["width"], version.size["height"]);
 
-                sharp.resize(version.size["width"], version.size["height"]);
+            if (version.size["width"] && version.size["width"] != 0 && version.size["height"] && version.size["height"] != 0) {
+
                 if (!version.resize || version.resize == "!") {
                     sharp.ignoreAspectRatio();
                 }

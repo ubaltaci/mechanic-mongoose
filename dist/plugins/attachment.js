@@ -56,7 +56,7 @@ module.exports = function (schema, options) {
              *    versions: {
              *       main: {
              *           size: "1920x1080",
-             *           resize: "^",
+             *           resize: ">",
              *           output: "jpeg"
              *       },
              *       display2: "960x",
@@ -64,7 +64,7 @@ module.exports = function (schema, options) {
              *     }
              * }
              *
-             *    available resize options: ^,!,>
+             *    available resize options: <,!,>
              *    available outputs: "jpeg", "jpg", "png"
              *
              *
