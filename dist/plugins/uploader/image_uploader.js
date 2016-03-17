@@ -23,14 +23,10 @@ module.exports = function (forklift, instance, images, callback) {
 
             var sharp = Sharp(localFilePath);
 
-            console.log(version.size["width"]);
-            console.log(version.size["height"]);
-
             sharp.resize(version.size["width"], version.size["height"]);
 
             if (version.size["width"] && version.size["width"] != 0 && version.size["height"] && version.size["height"] != 0) {
-                
-                sharp.resize(version.size["width"], version.size["height"]);
+
                 if (!version.resize || version.resize == "!") {
                     sharp.ignoreAspectRatio();
                 } else if (version.resize == ">") {
@@ -42,9 +38,6 @@ module.exports = function (forklift, instance, images, callback) {
                     return reduceCallback(new Error(version.resize + " is not valid for " + versionKey + ":" + image["schemaKey"]));
                 }
             }
-
-            console.log("2");
-            
 
             if (!version.output || version.output == "jpeg" || version.output == "jpg") {
 
