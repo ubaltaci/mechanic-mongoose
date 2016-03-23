@@ -86,7 +86,7 @@ function _createSlug(instance, slugItem, callback) {
             return callback(error);
         }
 
-        if (collapsedInstance && (collapsedInstance._id.toString() != instance._id.toString())) {
+        if (collapsedInstance && (collapsedInstance._id.toString() == instance._id.toString())) {
             instance[slugItem.slug] = slugValue + "-" + ShortId.generate();
             return callback();
         }
