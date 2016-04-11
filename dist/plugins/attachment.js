@@ -224,7 +224,7 @@ module.exports = function (schema, options) {
                 var ext = _getExtension(instance[_schemaKey].filename);
                 var name = _getFileName(instance[_schemaKey].filename);
 
-                if (fileField["extensions"].indexOf(ext) == -1) {
+                if (fileField["extensions"].indexOf(ext.toLocaleLowerCase()) == -1) {
                     return next(new Error(_schemaKey + " has not valid extension: " + ext));
                 }
 
@@ -368,7 +368,7 @@ function _getFileName(fileName) {
 function _getExtension(fileName) {
 
     try {
-        return fileName && fileName.split(".")[1];
+        return fileName && fileName.split(".").pop();
     } catch (e) {
         return "";
     }

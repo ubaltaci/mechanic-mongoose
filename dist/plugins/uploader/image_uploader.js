@@ -69,7 +69,7 @@ module.exports = function (forklift, instance, images, callback) {
                         return reduceCallback(error);
                     }
 
-                    forklift.upload(path, remoteFolder + versionKey + "." + version.output, function (error, url) {
+                    forklift.upload(path, remoteFolder + versionKey + "-" + Date.now() + "." + version.output, function (error, url) {
 
                         if (error) {
                             return reduceCallback(error);
