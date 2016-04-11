@@ -13,7 +13,7 @@ module.exports = (forklift, instance, files, callback) => {
     Async.each(files, (file, eachCallback) => {
 
         const localFilePath = instance[file["schemaKey"]]["path"];
-        const remoteFolder = `files/${file["schemaKey"]}/${instance._id}-${Slug(file["name"])}.${file["ext"]}`;
+        const remoteFolder = `files/${file["schemaKey"]}/${instance._id}-${Slug(file["name"])}-${Date.now()}.${file["ext"]}`;
 
         forklift.upload(localFilePath, remoteFolder, (error, url) => {
 
