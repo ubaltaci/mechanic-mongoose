@@ -15,7 +15,7 @@ module.exports = function (forklift, instance, files, callback) {
         var localFilePath = instance[file["schemaKey"]]["path"];
         var remoteFolder = "files/" + file["schemaKey"] + "/" + instance._id + "-" + Slug(file["name"]) + "." + file["ext"];
 
-        forklift.upload(localFilePath, remoteFolder, function (error, url) {
+        forklift.upload(localFilePath, remoteFolder, { timestamp: true }, function (error, url) {
 
             if (error) {
                 return eachCallback(error);
