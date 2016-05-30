@@ -29,7 +29,6 @@ module.exports = (schema, options) => {
         if (schema.tree[schemaItem].slug
             && (schema.tree[schemaItem].type == String || (schema.tree[schemaItem].type == mongoose.Schema.Types["String"]))) {
 
-
             const referenceKey = schema.tree[schemaItem].slug;
 
             if (schema.tree[referenceKey]) {
@@ -64,19 +63,14 @@ module.exports = (schema, options) => {
             }
             return _createSlug(instance, slugItem, eachCallback);
 
-        }, (error) => {
-            if (error) {
-                return next(error);
-            }
-            return next();
-        });
+        }, next);
 
     });
 };
 
 function _createSlug(instance, slugItem, callback) {
 
-    const slugValue = Slug(instance[slugItem.main]);
+    const slugValue = Slug(instance[slugItem.main], {lang: "tr"});
 
     instance.constructor.findOne({
         [slugItem.slug]: slugValue
