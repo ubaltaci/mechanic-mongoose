@@ -1,1 +1,1 @@
-module.exports = require("./dist/floppy");
+module.exports = require("./lib/floppy");
