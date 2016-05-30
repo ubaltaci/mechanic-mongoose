@@ -16,6 +16,7 @@ results
 node_modules
 
 npm-debug.log
+dist
 
 kns.txt
 Downloads
