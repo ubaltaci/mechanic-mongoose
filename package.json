@@ -33,9 +33,9 @@
     "tmp": "0.0.29"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "fs-extra": "^0.30.0",
-    "mocha": "^3.1.0",
-    "mongoose": "^4.6.2"
+    "chai": "3.5.0",
+    "fs-extra": "0.30.0",
+    "mocha": "3.1.0",
+    "mongoose": "4.6.3"
   }
 }

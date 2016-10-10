@@ -30,6 +30,12 @@ module.exports = (mongoose) => {
             type: mongoose.Schema.Types["File"],
             extension: ["png"]
         },
+
+        test_file_2: {
+            type: mongoose.Schema.Types["File"],
+            extension: ["pdf"]
+        },
+
         test_title: {
             type: String,
             slug: "test_slug"

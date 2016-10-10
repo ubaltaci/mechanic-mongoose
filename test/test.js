@@ -13,6 +13,7 @@ const TestSchema = require("../test/test_schema");
 describe("Floppy", () => {
 
     describe("Initialize", () => {
+
         it("should throw error without arguments", () => {
 
             Expect(() => {
@@ -354,7 +355,26 @@ describe("Floppy", () => {
                 });
             });
 
+            it("should correctly upload file with correct mime", (done) => {
+
+                Fs.copySync(Path.join(__dirname, "test_file.pdf"), Path.join(__dirname, "test_file_copy.pdf"));
+
+                testModel.create({
+                    test_file_2: {
+                        filename: "test_file_copy.pdf",
+                        path: Path.join(__dirname, "test_file_copy.pdf")
+                    }
+                }, (error, instance) => {
+
+                    Expect(error).to.not.exist;
+                    Expect(instance).to.exist;
+                    Expect(instance.test_file_2).to.exist;
+                    return done();
+                });
+            });
+
             after("Disconnect from Database", (done) => {
+
                 testSchema = null;
                 floppy = null;
                 mongooseTest.connection.db.dropCollection("tests", function (error) {
