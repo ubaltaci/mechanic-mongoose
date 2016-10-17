@@ -1,5 +1,5 @@
 const Path = require("path");
-const Fs = require("fs-extra");
+const Fse = require("fs-extra");
 
 const Chai = require("chai");
 const Mongoose = require("mongoose");
@@ -18,27 +18,34 @@ describe("Floppy", () => {
 
             Expect(() => {
                 new Floppy();
-            }).to.throw("Mongoose is not exist or is not valid.");
+            }).to.throw();
         });
 
         it("should throw error without mongoose", () => {
 
             Expect(() => {
                 new Floppy({});
-            }).to.throw("Mongoose is not exist or is not valid.");
+            }).to.throw();
         });
 
-        it("should throw error without s3", () => {
+        it("should throw error without s3 or filesystem", () => {
 
             Expect(() => {
                 new Floppy({mongoose: Mongoose});
-            }).to.throw("S3 should be passed to Floppy constructor");
+            }).to.throw();
         });
 
         it("should not throw error with mongoose & s3", () => {
 
             Expect(() => {
                 new Floppy({mongoose: Mongoose, s3: Config.s3});
+            }).to.not.throw();
+        });
+
+        it("should not throw error with mongoose & filesystem", () => {
+
+            Expect(() => {
+                new Floppy({mongoose: Mongoose, filesystem: {path: "test", url: "test"}});
             }).to.not.throw();
         });
 
@@ -275,7 +282,7 @@ describe("Floppy", () => {
             });
         });
 
-        describe("Attachment plugin", () => {
+        describe("Attachment plugin with s3", () => {
 
             let testModel;
 
@@ -298,7 +305,7 @@ describe("Floppy", () => {
 
             it("should correctly upload image", (done) => {
 
-                Fs.copySync(Path.join(__dirname, "test_image.png"), Path.join(__dirname, "test_image_copy.png"));
+                Fse.copySync(Path.join(__dirname, "test_image.png"), Path.join(__dirname, "test_image_copy.png"));
 
                 testModel.create({
                     test_image: {
@@ -306,7 +313,7 @@ describe("Floppy", () => {
                         path: Path.join(__dirname, "test_image_copy.png")
                     }
                 }, (error, instance) => {
-
+                    
                     Expect(error).to.not.exist;
                     Expect(instance).to.exist;
                     Expect(instance.test_image).to.exist;
@@ -320,7 +327,7 @@ describe("Floppy", () => {
 
             it("should correctly upload image with main_version", (done) => {
 
-                Fs.copySync(Path.join(__dirname, "test_image.png"), Path.join(__dirname, "test_image_copy.png"));
+                Fse.copySync(Path.join(__dirname, "test_image.png"), Path.join(__dirname, "test_image_copy.png"));
 
                 testModel.create({
                     test_image_2: {
@@ -339,7 +346,7 @@ describe("Floppy", () => {
 
             it("should correctly upload file", (done) => {
 
-                Fs.copySync(Path.join(__dirname, "test_image.png"), Path.join(__dirname, "test_image_copy.png"));
+                Fse.copySync(Path.join(__dirname, "test_image.png"), Path.join(__dirname, "test_image_copy.png"));
 
                 testModel.create({
                     test_file: {
@@ -357,7 +364,7 @@ describe("Floppy", () => {
 
             it("should correctly upload file with correct mime", (done) => {
 
-                Fs.copySync(Path.join(__dirname, "test_file.pdf"), Path.join(__dirname, "test_file_copy.pdf"));
+                Fse.copySync(Path.join(__dirname, "test_file.pdf"), Path.join(__dirname, "test_file_copy.pdf"));
 
                 testModel.create({
                     test_file_2: {
@@ -380,6 +387,92 @@ describe("Floppy", () => {
                 mongooseTest.connection.db.dropCollection("tests", function (error) {
                     mongooseTest.disconnect();
                     done();
+                });
+            });
+        });
+
+        describe("Attachment plugin with locale", () => {
+
+            let testModel;
+
+            before("Connect to Database", (done) => {
+
+                floppy = new Floppy({
+                    mongoose: Mongoose, filesystem: {
+                        path: Path.join(__dirname, "assets"),
+                        url: "/assets"
+                    }
+                });
+
+                mongooseTest = new Mongoose.Mongoose();
+                mongooseTest.connect(Config.mongourl, connectionOptions);
+                mongooseTest.connection.on("error", (error) => {
+                    return done(error);
+                });
+
+                mongooseTest.connection.once("open", () => {
+                    testSchema = TestSchema(mongooseTest);
+                    testModel = mongooseTest.model("Test", testSchema);
+                    floppy.setPlugins(testSchema, ["attachment"]);
+                    return done();
+                });
+            });
+
+            it("should correctly upload file to local system", (done) => {
+
+                Fse.copySync(Path.join(__dirname, "test_image.png"), Path.join(__dirname, "test_image_copy.png"));
+
+                testModel.create({
+                    test_file: {
+                        filename: "test_image_copy.png",
+                        path: Path.join(__dirname, "test_image_copy.png")
+                    }
+                }, (error, instance) => {
+
+                    Expect(error).to.not.exist;
+                    Expect(instance).to.exist;
+                    Expect(instance.test_file).to.exist;
+                    return done();
+                });
+            });
+
+            it("should correctly upload image to local system", (done) => {
+
+                Fse.copySync(Path.join(__dirname, "test_image.png"), Path.join(__dirname, "test_image_copy.png"));
+
+                testModel.create({
+                    test_image: {
+                        filename: "test_image_copy.png",
+                        path: Path.join(__dirname, "test_image_copy.png")
+                    }
+                }, (error, instance) => {
+
+                    Expect(error).to.not.exist;
+                    Expect(instance).to.exist;
+                    Expect(instance.test_image).to.exist;
+                    Expect(instance.test_image.main).to.exist;
+                    Expect(instance.test_image.display2).to.exist;
+                    Expect(instance.test_image.display3).to.exist;
+
+                    return done();
+                });
+            });
+
+            after("Disconnect from Database", (done) => {
+
+                testSchema = null;
+                floppy = null;
+
+                Fse.remove(Path.join(__dirname, "assets"), (error) => {
+
+                    if (error) {
+                        return done(error);
+                    }
+
+                    return mongooseTest.connection.db.dropCollection("tests", function (error) {
+                        mongooseTest.disconnect();
+                        return done();
+                    });
                 });
             });
         });
