@@ -93,7 +93,7 @@ describe("Floppy", () => {
             before("Connect to Database", (done) => {
                 floppy = new Floppy({mongoose: Mongoose, s3: Config.s3});
                 mongooseTest = new Mongoose.Mongoose();
-                mongooseTest.connect(Config.mongourl, connectionOptions);
+                mongooseTest.connect(Config.mongoUrl, connectionOptions);
                 mongooseTest.connection.on("error", (error) => {
                     return done(error);
                 });
@@ -156,7 +156,7 @@ describe("Floppy", () => {
 
                 floppy = new Floppy({mongoose: Mongoose, s3: Config.s3});
                 mongooseTest = new Mongoose.Mongoose();
-                mongooseTest.connect(Config.mongourl, connectionOptions);
+                mongooseTest.connect(Config.mongoUrl, connectionOptions);
                 mongooseTest.connection.on("error", (error) => {
                     return done(error);
                 });
@@ -204,7 +204,7 @@ describe("Floppy", () => {
             before("Connect to Database", (done) => {
                 floppy = new Floppy({mongoose: Mongoose, s3: Config.s3});
                 mongooseTest = new Mongoose.Mongoose();
-                mongooseTest.connect(Config.mongourl, connectionOptions);
+                mongooseTest.connect(Config.mongoUrl, connectionOptions);
                 mongooseTest.connection.on("error", (error) => {
                     return done(error);
                 });
@@ -290,7 +290,7 @@ describe("Floppy", () => {
 
                 floppy = new Floppy({mongoose: Mongoose, s3: Config.s3});
                 mongooseTest = new Mongoose.Mongoose();
-                mongooseTest.connect(Config.mongourl, connectionOptions);
+                mongooseTest.connect(Config.mongoUrl, connectionOptions);
                 mongooseTest.connection.on("error", (error) => {
                     return done(error);
                 });
@@ -405,7 +405,7 @@ describe("Floppy", () => {
                 });
 
                 mongooseTest = new Mongoose.Mongoose();
-                mongooseTest.connect(Config.mongourl, connectionOptions);
+                mongooseTest.connect(Config.mongoUrl, connectionOptions);
                 mongooseTest.connection.on("error", (error) => {
                     return done(error);
                 });
