@@ -81,8 +81,8 @@ describe("Floppy", () => {
     describe("Plugins", () => {
 
         const connectionOptions = {
-            server: {socketOptions: {keepAlive: 1, connectTimeoutMS: 30000}},
-            replset: {socketOptions: {keepAlive: 1, connectTimeoutMS: 30000}}
+            keepAlive: true,
+            connectTimeoutMS: 30000
         };
         let floppy;
         let mongooseTest;
@@ -112,7 +112,7 @@ describe("Floppy", () => {
             });
 
             it("should correctly set createdAt and updatedAt", (done) => {
-                testModel = mongooseTest.model("Test", testSchema);
+                testModel = mongooseTest.models && mongooseTest.models["Test"] ? mongooseTest.models["Test"] : mongooseTest.model("Test", testSchema);
                 testModel.create({test_title: "created"}, (error, testInstance) => {
                     Expect(error).to.not.exist;
                     Expect(testInstance).to.exist;
@@ -177,7 +177,7 @@ describe("Floppy", () => {
 
             it("should create new item with _id with string type", (done) => {
 
-                testModel = mongooseTest.model("Test", testSchema);
+                testModel = mongooseTest.models && mongooseTest.models["Test"] ? mongooseTest.models["Test"] : mongooseTest.model("Test", testSchema);
 
                 testModel.create({test_title: "created"}, (error, instance) => {
                     Expect(instance["_id"]).to.exist;
@@ -225,7 +225,7 @@ describe("Floppy", () => {
 
             it("should correctly set test_slug", (done) => {
 
-                testModel = mongooseTest.model("Test", testSchema);
+                testModel = mongooseTest.models && mongooseTest.models["Test"] ? mongooseTest.models["Test"] : mongooseTest.model("Test", testSchema);
 
                 testModel.create({test_title: "created"}, (error, instance) => {
                     Expect(error).to.not.exist;
@@ -240,7 +240,7 @@ describe("Floppy", () => {
 
             it("should correctly set test_slug with same content", (done) => {
 
-                testModel = mongooseTest.model("Test", testSchema);
+                testModel = mongooseTest.models && mongooseTest.models["Test"] ? mongooseTest.models["Test"] : mongooseTest.model("Test", testSchema);
 
                 testInstance.test_title = "created";
                 testInstance.save((error) => {
@@ -255,7 +255,7 @@ describe("Floppy", () => {
 
             it("should correctly set test_slug with same content on another document", (done) => {
 
-                testModel = mongooseTest.model("Test", testSchema);
+                testModel = mongooseTest.models && mongooseTest.models["Test"] ? mongooseTest.models["Test"] : mongooseTest.model("Test", testSchema);
 
                 testModel.create({test_title: "created"}, (error, instance) => {
                     Expect(error).to.not.exist;
@@ -412,7 +412,7 @@ describe("Floppy", () => {
 
                 mongooseTest.connection.once("open", () => {
                     testSchema = TestSchema(mongooseTest);
-                    testModel = mongooseTest.model("Test", testSchema);
+                    testModel = mongooseTest.models && mongooseTest.models["Test"] ? mongooseTest.models["Test"] : mongooseTest.model("Test", testSchema);
                     floppy.setPlugins(testSchema, ["attachment"]);
                     return done();
                 });
