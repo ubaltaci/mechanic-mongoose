@@ -1,6 +1,6 @@
 {
   "name": "mechanic-mongoose",
-  "version": "7.2.0",
+  "version": "7.2.1",
   "description": "Mechanic mongoose with attachments",
   "main": "index.js",
   "scripts": {
@@ -27,15 +27,15 @@
     "is_js": "0.9.0",
     "joi": "13.3.0",
     "mongoose-timestamp": "0.6.0",
-    "s3-forklift": "0.6.1",
+    "s3-forklift": "0.8.1",
     "sharp": "0.20.2",
     "shortid": "2.2.8",
     "speakingurl": "14.0.1",
     "tmp": "0.0.33"
   },
   "devDependencies": {
-    "chai": "3.5.0",
-    "mocha": "3.2.0",
+    "chai": "4.1.2",
+    "mocha": "5.2.0",
     "mongoose": "5.1.2"
   },
   "engines": {
