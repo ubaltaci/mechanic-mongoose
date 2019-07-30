@@ -1,30 +1,19 @@
-#mechanic-mongoose
+### mechanic-mongoose
+
+Extend mongoose functionality with various features.
+
+## Install
 
 ```
-{
-
-        test_image: {
-            type: mongoose.Schema.Types["Image"],
-            versions: {
-                main: {
-                    size: "1920x1080",
-                    resize: "^",
-                    output: "jpeg",
-                    quality: 80
-                },
-                display2: "960x",
-                display3: "x960"
-            }
-        },
-        test_file: {
-            type: mongoose.Schema.Types["File"],
-            extension: ["png"]
-        },
-        test_title: {
-            type: String,
-            slug: "test_slug"
-        }
-
-    }
-    
+npm install mechanic-mongoose --save
 ```
+
+## Test
+
+Rename `config.example.json` to `config.json` with valid credentials.
+
+Then, run test via `npm run test`
+
+## Requirements
+
+* Node.js 10+
