@@ -1,4 +1,4 @@
-##mechanic-mongoose
+#mechanic-mongoose
 
 ```
 {

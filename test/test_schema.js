@@ -12,7 +12,7 @@ module.exports = (mongoose) => {
             versions: {
                 main: {
                     size: "1920x1080",
-                    resize: ">",
+                    resize: "<",
                     output: "jpeg",
                     quality: 80
                 },
