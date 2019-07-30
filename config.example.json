@@ -1,0 +1,10 @@
+{
+  "mongoUrl": "",
+  "s3": {
+    "provider": "",
+    "accessKey": "",
+    "secretKey": "",
+    "bucket": "",
+    "region": ""
+  }
+}
