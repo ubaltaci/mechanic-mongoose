@@ -11,8 +11,8 @@ module.exports = (mongoose) => {
             type: mongoose.Schema.Types["Image"],
             versions: {
                 main: {
-                    size: "1920x1080",
-                    resize: "<",
+                    size: "200x200",
+                    resize: "^",
                     output: "jpeg",
                     quality: 80
                 },
