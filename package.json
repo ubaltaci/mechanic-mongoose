@@ -1,6 +1,6 @@
 {
   "name": "mechanic-mongoose",
-  "version": "7.3.0",
+  "version": "7.3.1",
   "description": "Mechanic mongoose with attachments",
   "main": "index.js",
   "scripts": {
@@ -28,7 +28,7 @@
     "joi": "13.3.0",
     "mongoose-timestamp": "0.6.0",
     "s3-forklift": "0.8.1",
-    "sharp": "0.20.2",
+    "sharp": "0.23.0",
     "shortid": "2.2.8",
     "speakingurl": "14.0.1",
     "tmp": "0.0.33"
@@ -39,6 +39,6 @@
     "mongoose": "5.1.2"
   },
   "engines": {
-    "node": ">=8.9.0"
+    "node": ">=9"
   }
 }

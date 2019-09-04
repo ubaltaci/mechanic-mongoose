@@ -463,17 +463,17 @@ describe("Floppy", () => {
                 testSchema = null;
                 floppy = null;
 
-                Fse.remove(Path.join(__dirname, "assets"), (error) => {
+                // Fse.remove(Path.join(__dirname, "assets"), (error) => {
+                //
+                //     if (error) {
+                //         return done(error);
+                //     }
 
-                    if (error) {
-                        return done(error);
-                    }
-
-                    return mongooseTest.connection.db.dropCollection("tests", function (error) {
-                        mongooseTest.disconnect();
+                    // return mongooseTest.connection.db.dropCollection("tests", function (error) {
+                    //     mongooseTest.disconnect();
                         return done();
-                    });
-                });
+                    // });
+                // });
             });
         });
 
