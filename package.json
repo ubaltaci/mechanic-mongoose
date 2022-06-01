@@ -25,7 +25,7 @@
     "@hapi/joi": "15.1.0",
     "fs-extra": "8.1.0",
     "s3-forklift": "1.1.0",
-    "sharp": "0.24.1",
+    "sharp": "0.30.5",
     "shortid": "2.2.15",
     "speakingurl": "14.0.1",
     "tmp-promise": "2.0.2",
